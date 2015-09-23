@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+    <meta charset="UTF-8">
+    <title>Resumes Dashboard</title>
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <script src="http://code.highcharts.com/highcharts.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="/angular/angular.js"></script>
+    <script src="/javascripts/getInfo.js"> </script>
+    <script src="/moment/moment.js"></script>
+    <link rel="stylesheet" href="/stylesheets/dashboard.css"/>
+
+</head>
+<body ng-controller="myCtrl">
+<h1 class="jumbotron"><%= title%></h1>
+
+<label>Files uploaded:</label>
+
+<ul>
+    <li><span id="btnLastWeeek" class="btn btn-default" >Last Week</span></li>
+    <li><span id="btnLastWeeek" class="btn btn-default">Last Month</span></li>
+
+</ul>
+
+<div id="container" style="width:100%; height:400px;"></div>
+<script>
+    $(function () {
+        console.log('from jquery',angularBridge.$demoScope.chartInfo);
+        var char = {
+            chart:{type:''},
+            title:{text:''},
+            xAxis:{categories:[]},
+            yAxis:{title:{text:''}},
+            series:[{name:'',data:[]}]
+        };
+        function createChartInfo(data){
+
+
+            console.log('data from createchartinfo*****',data);
+            data.forEach(function(res){
+                console.log('dates from data****',moment(res.creationDate).format('YYYY-MM-DD'));
+
+            });
+            char.chart.type = 'line';
+            char.title.text = 'Resumes Uploaded last week'
+            var dates = [];
+            var currentDate = moment();
+            for (var i=1;i<8;i++){
+                //console.log(currentDate.subtract(1,'day').format('YYYY-MM-DD'));
+                char.xAxis.categories.push(currentDate.subtract(1,'day').format('YYYY-MM-DD'))
+            }
+            char.yAxis.title.text = 'Number of Resumes';
+            char.series.name = 'Uploads';
+            char.series.data = '';
+            console.log('char',char);
+
+
+            var chartInfo={
+                chart: {
+                    type: 'line'
+                },
+                title: {
+                    text: 'Resumes Uploaded on week from 27 Jun to 30 Jun 2015  '
+                },
+                xAxis: {
+                    categories: ['27 Jun', '28 Jun', '29 Jun']
+                },
+                yAxis: {
+                    title: {
+                        text: 'Number of resumes'
+                    }
+                },
+                series: [{
+                    name: 'Uploads',
+                    data: [13, 8, 6]
+                }]
+            };
+            console.log('data from createchartinfo*****',chartInfo);
+
+            return chartInfo;
+
+        }
+        $('#btnLastWeeek').click(function(){
+           console.log('click on btn');
+            $.ajax('/resumes/w/'+ new Date()).done(function(data){
+                console.log('data char****',data+":date"+new Date().toLocaleDateString());
+                char = createChartInfo(data);
+                $('#container').highcharts(char);
+            })
+
+        });
+
+
+
+        /*$('#container').highcharts(
+            {
+                chart: {
+                    type: 'line'
+                },
+                title: {
+                    text: 'Resumes Uploaded on week from 27 Jun to 30 Jun 2015  '
+                },
+                xAxis: {
+                    categories: ['27 Jun', '28 Jun', '29 Jun']
+                },
+                yAxis: {
+                    title: {
+                        text: 'Number of resumes'
+                    }
+                },
+                series: [{
+                    name: 'Uploads',
+                    data: [13, 8, 6]
+                }]
+            }
+        );*/
+
+
+    });
+</script>
+</body>
+</html>
