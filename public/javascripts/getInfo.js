@@ -7,52 +7,7 @@ angular.module('myApp', []). controller('myCtrl', function($scope, $http){
     angularBridge.$demoScope = $scope;
     $scope.resumeObj = {};
     $scope.datalists = [];
-    $scope.chartInfo = {};
-    $scope.some={};
 
-
-    function createChartInfo(data){
-        console.log('data from createchartinfo*****',data);
-
-        //chartInfo.chart.type = 'line';
-
-        var chartInfo={
-            chart: {
-                type: 'line'
-            },
-            title: {
-                text: 'Resumes Uploaded on week from 27 Jun to 30 Jun 2015  '
-            },
-            xAxis: {
-                categories: ['27 Jun', '28 Jun', '29 Jun']
-            },
-            yAxis: {
-                title: {
-                    text: 'Number of resumes'
-                }
-            },
-            series: [{
-                name: 'Uploads',
-                data: [13, 8, 6]
-            }]
-        };
-        console.log('data from createchartinfo*****',chartInfo);
-
-        return chartInfo;
-
-    }
-
-    $scope.getLastWeekResumes = function(){
-        var date = new Date();
-        console.log('from controller',new Date());
-        $http.get('/resumes/w/'+ date).success(function(result){
-            var results = result;
-            console.log("===>",$scope.chartInfo);
-            $scope.chartInfo = createChartInfo(result);
-
-        })
-
-    },
     $scope.showData = function( ) {
         $scope.curPage = 0;
         $scope.pageSize = 3;
@@ -65,9 +20,32 @@ angular.module('myApp', []). controller('myCtrl', function($scope, $http){
             };
             console.log($scope.numberOfPages());
         })
-      }
-  //  $scope.showData();
-    })
+      };
+    $scope.criterion = 'creationDate';
+    $scope.sort = function (num) {
+        switch (num) {
+            case 1:  $scope.criterion = '_id';
+                break;
+            case 2:  $scope.criterion = 'name';
+                break;
+            case 3:  $scope.criterion = 'email';
+                break;
+            case 4:  $scope.criterion = 'phone';
+                break;
+            case 5:  $scope.criterion = 'uuid';
+                break;
+            case 6:  $scope.criterion = 'status';
+                break;
+            case 7:  $scope.criterion = '-creationDate';
+                break;
+            case 8:  $scope.criterion = 'processDate';
+                break;
+        }
+
+
+    };
+
+    });
 
 
 angular.module('myApp').filter('paginate', function()

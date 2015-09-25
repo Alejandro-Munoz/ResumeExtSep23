@@ -5,7 +5,7 @@
  * @module Simple Rest Generator
  * @description Generate a restful endpoint for a given Mongoose Model
  * */
-
+var moment = require('moment');
 var router = require('express').Router();
 
 module.exports = function (MongooseModel) {
@@ -21,15 +21,47 @@ module.exports = function (MongooseModel) {
             }
         });
     });
+    //end point for last week resumes
     router.get('/w/:date', function (req, res) {
         // find call to mongoose
         console.log('date from router******',req.params.date);
-        var start = new Date(req.params.date).toDateString();
-        var end = new Date();
+        //var start = new Date(req.params.date).toDateString();
+        var end = moment();
+        console.log('end date from router******',end.format('YYYY-MM-DD'));
+        var start = moment().subtract(7,'day').format('YYYY-MM-DD');
         console.log('start date from router******',start);
 
-        //MongooseModel.find({"creationDate":{"$gte": start, "$lt": end}}, function (err, response) {
-        MongooseModel.find({"creationDate":{"$lt": start}}, function (err, response) {
+        MongooseModel.find({"creationDate":{"$gte": start, "$lt": end}}, function (err, response) {
+        //MongooseModel.find({"creationDate":{"$lt": start}}, function (err, response) {
+            if (err) {
+                res.status(500).json({ message: 'Something Broke!' });
+            } else {
+                res.status(200).json(response);
+            }
+        });
+    });
+    //end point for last month resumes
+    router.get('/m/:date', function (req, res) {
+        // find call to mongoose
+        console.log('date from router******',req.params.date);
+        //var start = new Date(req.params.date).toDateString();
+        var end = moment();
+        console.log('end date from router******',end.format('YYYY-MM-DD'));
+        var start = moment().subtract(30,'day').format('YYYY-MM-DD');
+        console.log('start date from router******',start);
+
+        MongooseModel.find({"creationDate":{"$gte": start, "$lt": end}}, function (err, response) {
+            //MongooseModel.find({"creationDate":{"$lt": start}}, function (err, response) {
+            if (err) {
+                res.status(500).json({ message: 'Something Broke!' });
+            } else {
+                res.status(200).json(response);
+            }
+        });
+    });
+    //end point for today resumes
+    router.get('/today/', function (req, res) {
+        MongooseModel.find({"creationDate":{"$gte": new Date('2015-09-24')}}, function (err, response) {
             if (err) {
                 res.status(500).json({ message: 'Something Broke!' });
             } else {
