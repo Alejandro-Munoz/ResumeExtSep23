@@ -36,6 +36,10 @@
                background-color: #eee;
                transition: background-color 500ms ease;
            }
+          .jumbotron{
+              background-color: #00b3ee;
+              color: #fff;
+          }
 
       </style>
   </head>
@@ -58,7 +62,7 @@
            <tbody>
            <tr class="paginationclass" ng-repeat="datalist in datalists | paginate: curPage * pageSize | limitTo: pageSize| orderBy : criterion">
                <td>{{datalist._id | limitTo: -10}}</td>
-               <td title='{{datalist.name}}'>{{datalist.name |limitTo:14}}</td>
+               <td title='{{datalist.name}}'><a target="_blank" href="./pathToPdf/{{datalist.name}}.pdf">{{datalist.name |limitTo:14}}</a></td>
                <td>{{datalist.email}}</td>
                <td>{{datalist.phone}}</td>
                <td>{{datalist.uuid | limitTo: -10}}</td>
