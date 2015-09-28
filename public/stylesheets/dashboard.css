@@ -1,0 +1,24 @@
+
+body{
+    font: normal italic large "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+ul{
+    display: inline-flex;
+    list-style: none;
+
+}
+li{
+    float: left;
+    margin: 10px auto;
+    padding: 10px;
+}
+
+/*span:hover{
+    border:1px solid grey;
+    background-color: white;
+    color: lightgray;
+    border-radius: 15px;
+    cursor: pointer;
+}*/
+

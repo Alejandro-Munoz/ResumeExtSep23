@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+  <head>
+    <title>Resume</title>
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+      <script src="/angular/angular.js"></script>
+      <script src="/javascripts/getInfo.js"> </script>
+      <style>
+          .paginationclass span{
+              margin-left:15px;
+              display:inline-block;
+          }
+          .pagination-controle li{
+              display: inline-block;
+          }
+          .pagination-controle button{
+              font-size: 12px;
+              margin-top: -26px;
+              cursor:pointer;
+
+          }
+          .pagination{
+              margin:5px 12px !important;
+          }
+          ul
+          {
+              list-style-type: none;
+          }
+          .tHead{
+              background-color: #2E6DA4;
+              color: white;
+          }
+
+           th:hover {
+               cursor: pointer;
+               background-color: #eee;
+               transition: background-color 500ms ease;
+           }
+          .jumbotron{
+              background-color: #2E6DA4;
+              color: #fff;
+          }
+
+      </style>
+  </head>
+  <body >
+   <div class="container table-responsive" ng-controller="myCtrl">
+       <h2 class="jumbotron"><%= title %></h2>
+       <table class="table table-condensed table-striped table-bordered table-hover  no-margin" ng-init="showData()">
+           <thead class="tHead">
+           <tr>
+               <th style="width:10%" ng-click="sort(1)">Id</th>
+               <th style="width:13%" ng-click="sort(2)">Name</th>
+               <th style="width:17%" ng-click="sort(3)">Email</th>
+               <th style="width:12%" ng-click="sort(4)">Phone</th>
+               <th style="width:10%" ng-click="sort(5)">Batch Id</th>
+               <th style="width:3%" ng-click="sort(6)">Status</th>
+               <th style="width:15%" ng-click="sort(7)">Create Date</th>
+               <th style="width:15%" ng-click="sort(8)">Process Date</th>
+           </tr>
+           </thead>
+           <tbody>
+           <tr class="paginationclass" ng-repeat="datalist in datalists | paginate: curPage * pageSize | limitTo: pageSize| orderBy : criterion">
+               <td>{{datalist._id | limitTo: -10}}</td>
+               <td title='{{datalist.name}}'><a target="_blank" href="./pathToPdf/{{datalist.name}}.pdf">{{datalist.name |limitTo:14}}</a></td>
+               <td>{{datalist.email}}</td>
+               <td>{{datalist.phone}}</td>
+               <td>{{datalist.uuid | limitTo: -10}}</td>
+               <td>{{datalist.status}}</td>
+               <td>{{datalist.creationDate| date:"yyyy/MM/dd 'at' h:mm:sa"}}</td>
+               <td>{{datalist.processDate| date:"yyyy/MM/dd 'at' h:mm:sa"}}</td>
+           </tr>
+           </tbody>
+       </table>
+           <div class="pagination pagination-centered" ng-show="datalists.length">
+               <ul class="pagination-controle pagination">
+                   <li>
+                       <button type="button" class="btn btn-primary" ng-disabled="curPage == 0"
+                               ng-click="curPage=curPage-1"> &lt; PREV</button>
+                   </li>
+                   <li>
+                       <span>Page {{curPage + 1}} of {{ numberOfPages() }}</span>
+                   </li>
+                   <li>
+                       <button type="button" class="btn btn-primary"
+                               ng-disabled="curPage >= datalists.length/pageSize - 1"
+                               ng-click="curPage = curPage+1">NEXT &gt;</button>
+                   </li>
+               </ul>
+           </div>
+       <br>
+       <label>
+           Enter Batch ID: <input ng-model="batchID" type="text">
+           <button class="btn btn-primary" ng-click="statusCodes(batchID)">Enter</button>
+       </label>
+       <span>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</span>
+       <label>
+           Enter Skills<input ng-model="skill" type="text">
+           <button class="btn btn-primary" ng-click="skillSearch(skill.toLowerCase())">Enter</button>
+       </label>
+   </div>
+  </body>
+</html>

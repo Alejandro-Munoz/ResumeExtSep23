@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Resumes Dashboard</title>
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <script src="http://code.highcharts.com/highcharts.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="/angular/angular.js"></script>
+    <script src="/javascripts/getInfo.js"> </script>
+    <script src="/moment/moment.js"></script>
+    <script src="/javascripts/getChart.js"></script>
+    <script src="/javascripts/getPieChart.js"></script>
+    <link rel="stylesheet" href="/stylesheets/dashboard.css"/>
+    <style>
+        .jumbotron{
+            background-color: #00b3ee;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1 class="jumbotron"><%= title%></h1>
+
+    <label>Files uploaded:</label>
+
+    <ul>
+        <li><span id="btnToday" class="btn btn-default">Today</span></li>
+        <li><span id="btnLastWeeek" class="btn btn-default">Last Week</span></li>
+        <li><span id="btnLastMonth" class="btn btn-default">Last Month</span></li>
+
+    </ul>
+    <div id="container" style="width:100%; height:400px;"></div>
+    <hr/>
+    <div id="containerPie" style="width:100%; height:400px;"></div>
+
+
+</div>
+<script>
+    $(function () {
+
+
+
+        //Today button handler
+        $('#btnToday').click(function(){
+            $.ajax('/resumes/today/').done(function(data){
+                console.log('enter today handler',data);
+                var charInfo = createChartInfo(data,0);
+                //display chart
+                $('#container').highcharts(charInfo);
+            })
+
+        });
+        //Last week button handler
+        $('#btnLastWeeek').click(function(){
+            console.log('click on btn');
+            $.ajax('/resumes/w/'+ new Date()).done(function(data){
+                console.log('data from last week:',data)
+                var charInfo = createChartInfo(data,7);
+                //display chart
+                $('#container').highcharts(charInfo);
+            })
+
+        });
+        //Last week button handler
+        $('#btnLastMonth').click(function(){
+            console.log('click on btn');
+            $.ajax('/resumes/m/'+ new Date()).done(function(data){
+                console.log('data from last month:',data)
+                var charInfo = createChartInfo(data,30);
+                //display chart
+                $('#container').highcharts(charInfo);
+            })
+
+        });
+        //trigger click event to get today data
+        $('#btnToday').click();
+
+        //get Data and display Pie Chart
+        $.ajax('/resumes/').done(function(data){
+            console.log('data from pie:',data)
+            $('#containerPie').highcharts(getPieChart(data));
+        });
+
+    });
+
+</script>
+</body>
+</html>
