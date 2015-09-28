@@ -1,12 +1,16 @@
 /**
  * Created by lakshmi on 9/9/15.
  */
-angularBridge = {};
+
 angular.module('myApp', []). controller('myCtrl', function($scope, $http){
-   //$scope.test = "hello world"
-    angularBridge.$demoScope = $scope;
     $scope.resumeObj = {};
     $scope.datalists = [];
+
+    $scope.url = window.location.href;
+    console.log($scope.url);
+    var id = $scope.url.split('/')[4];
+    console.log(id);
+
 
     $scope.showData = function( ) {
         $scope.curPage = 0;
@@ -20,7 +24,36 @@ angular.module('myApp', []). controller('myCtrl', function($scope, $http){
             };
             console.log($scope.numberOfPages());
         })
-      };
+    };
+    $scope.statusCodes = function(batchID){
+        console.log('*************batch from status code',batchID);
+
+        $http.get('/status/'+$scope.batchID).success(function(result){
+            $scope.datalists = result;
+            // console.log("status datalists",$scope.datalists);
+            console.log("===>",$scope.datalists);
+            $scope.numberOfPages = function() {
+                return Math.ceil($scope.datalists.length / $scope.pageSize);
+            };
+            //  console.log($scope.numberOfPages());
+        })
+    };
+
+    $scope.skillSearch = function(skill){
+        console.log(skill);
+        // console.log($scope.skill)
+        $http.get('/skills/'+$scope.skill).success(function(result){
+            console.log('in')
+            console.log('results*******',result);
+            $scope.datalists = result;
+            // console.log("status datalists",$scope.datalists);
+            console.log("===>",$scope.datalists);
+            $scope.numberOfPages = function() {
+                return Math.ceil($scope.datalists.length / $scope.pageSize);
+            };
+            //  console.log($scope.numberOfPages());
+        })
+    };
     $scope.criterion = 'creationDate';
     $scope.sort = function (num) {
         switch (num) {
@@ -44,8 +77,7 @@ angular.module('myApp', []). controller('myCtrl', function($scope, $http){
 
 
     };
-
-    });
+});
 
 
 angular.module('myApp').filter('paginate', function()

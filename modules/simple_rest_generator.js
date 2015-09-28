@@ -61,7 +61,7 @@ module.exports = function (MongooseModel) {
     });
     //end point for today resumes
     router.get('/today/', function (req, res) {
-        MongooseModel.find({"creationDate":{"$gte": new Date('2015-09-24')}}, function (err, response) {
+        MongooseModel.find({"creationDate":{"$gte": new Date('YYYY-MM-DD')}}, function (err, response) {
             if (err) {
                 res.status(500).json({ message: 'Something Broke!' });
             } else {
@@ -69,11 +69,9 @@ module.exports = function (MongooseModel) {
             }
         });
     });
-
-
     router.get('/:date', function (req, res) {
         // find call to mongoose
-        var date = req.params.date;
+        var     date = moment().add(1,'day').format('YYYY-MM-DD');
         console.log('*****date',date);
         var startDate;
         var endDate;

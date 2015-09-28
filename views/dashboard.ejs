@@ -11,6 +11,7 @@
     <script src="/javascripts/getInfo.js"> </script>
     <script src="/moment/moment.js"></script>
     <script src="/javascripts/getChart.js"></script>
+    <script src="/javascripts/getPieChart.js"></script>
     <link rel="stylesheet" href="/stylesheets/dashboard.css"/>
 
 </head>
@@ -27,10 +28,15 @@
 
     </ul>
     <div id="container" style="width:100%; height:400px;"></div>
+    <hr/>
+    <div id="containerPie" style="width:100%; height:400px;"></div>
+
 
 </div>
 <script>
     $(function () {
+
+
 
         //Today button handler
         $('#btnToday').click(function(){
@@ -64,8 +70,14 @@
             })
 
         });
-
+        //trigger click event to get today data
         $('#btnToday').click();
+
+        //get Data and display Pie Chart
+        $.ajax('/resumes/').done(function(data){
+            console.log('data from pie:',data)
+            $('#containerPie').highcharts(getPieChart(data));
+        });
 
     });
 

@@ -20,6 +20,11 @@ var uniqueId;
 var arrId = {};
 var phoneMatch = /\({0,1}\s*\d{3}?\s*\){0,1}\-*\s*\d{3}?\s*\-*(\-\?)*\s*\d{4}/;
 var emailMatch =  /([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+)/i;
+var wordMatch = /((react?)|(angular?)|(javascript?)|(node?)|(mongo ?)|(jquery?)|(backbone?))/gmi;
+var wordCount ={};
+var wordMatchArr = [];
+
+
 
 function getPdfToText(file, uniqueId, callback) {
     var fileName = file.slice(0,-4);
@@ -63,6 +68,15 @@ function extractDataAndSave(path, id) {
         var email;
         phoneNumber = phoneMatch.exec(data.toString());
         console.log('nullCheck: ' + (phoneNumber == null));
+
+        data.toString().replace(wordMatch, function(_, matched){
+            wordCount[matched] = (wordCount[matched] || 1) +1;
+        })
+
+        console.log("wordCount",wordCount);
+
+        //wordMatchArr.push(wordCount);
+
         if (phoneNumber !== null){
             phoneNumber = phoneNumber[0];
         }
@@ -70,7 +84,8 @@ function extractDataAndSave(path, id) {
         //console.log('phone number is', phoneNumber);
         email = emailMatch.exec(data.toString())[0];
         //log into mongo end of process
-        updateStatus(id,{status:'3', processDate: Date.now(), email: email, phone: phoneNumber });
+        //updateStatus(id,{status:'3', processDate: Date.now(), email: email, phone: phoneNumber });
+        updateStatus(id,{status:'3', processDate: Date.now(), email: email, phone: phoneNumber, skills: wordCount });
     });
 }
 
@@ -105,6 +120,43 @@ function moveFiles(source, destination) {
     })
     return true;
 }
+
+router.get('/status/:id', function(req, res){
+    console.log(req.params.id);
+    Resume.find({uuid:req.params.id},function(err, results){
+        if (err) res.status(500).json(err);
+        else {
+            //   console.log("====>",results);
+            res.status(200).json(results);
+            //  res.render('status',{Resume: JSON.stringify(results)});
+        }
+    });
+
+});
+
+router.get('/skills/:skill', function(req, res){
+    console.log("req.params.skill",req.params.skill);
+    var query = {};
+    query['skills.' + req.params.skill] = {$gte: 1};
+    console.log("query", query)
+    // var skillSet = ('skills.' + req.params.skill);
+    // console.log('skillSet',skillSet) //skills.react
+    Resume.find(query, function(err, results){
+        console.log('entry');
+
+        console.log(results);
+        if (err) {
+            res.status(500).json(err);
+        }
+        else {
+            //   console.log("====>",results);
+            res.status(200).json(results);
+            //  res.render('status',{Resume: JSON.stringify(results)});
+        }
+    });
+
+});
+
 
 router.get('/', function(req, res, next){
 
