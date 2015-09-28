@@ -1,5 +1,9 @@
 /**
+<<<<<<< HEAD
  * Created by Alejandro on 9/4/15.
+=======
+ * Created by lakshmi on 9/4/15.
+>>>>>>> lakshmi
  */
 
 var express = require('express');
@@ -28,8 +32,10 @@ var wordMatchArr = [];
 
 function getPdfToText(file, uniqueId, callback) {
     var fileName = file.slice(0,-4);
+    console.log('FileName=====>',arrId[fileName] )
 
-    var pdftotext = spawn('pdftotext', [pathToPdf + fileName +'.pdf', saveTo + fileName + '.txt'],  {cwd: 'C:/Program Files/Xpdf/bin64'});
+    var pdftotext = spawn('pdftotext', [pathToPdf + fileName +'.pdf', saveTo + arrId[fileName] + '.txt'],  {cwd: 'C:/Program Files/Xpdf/bin64'});
+
     pdftotext.on('close', function (code) {
         //if(code!=0) callback(code)
         Resume.findByIdAndUpdate(uniqueId, {status:'1'}, function (err, response) {
@@ -70,6 +76,7 @@ function extractDataAndSave(path, id) {
         console.log('nullCheck: ' + (phoneNumber == null));
 
         data.toString().replace(wordMatch, function(_, matched){
+            matched = matched.toLowerCase();
             wordCount[matched] = (wordCount[matched] || 1) +1;
         })
 
@@ -196,7 +203,7 @@ router.get('/', function(req, res, next){
         async.parallelLimit(asyncTasks,5, function(){
             files.forEach(function(fileName){
                 var fileName = fileName.slice(0,-4);
-                var path = saveTo + fileName +'.txt';
+                var path = saveTo + arrId[fileName] +'.txt';
                 var id = arrId[fileName];
 
                 extractDataAndSave(path, id);

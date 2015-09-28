@@ -37,7 +37,7 @@
                transition: background-color 500ms ease;
            }
           .jumbotron{
-              background-color: #00b3ee;
+              background-color: #2E6DA4;
               color: #fff;
           }
 
@@ -90,12 +90,13 @@
            </div>
        <br>
        <label>
-           Enter Batch Id:<input ng-model="batchID" type="text">
-           <button ng-click="statusCodes(batchID)">Enter</button>
+           Enter Batch ID: <input ng-model="batchID" type="text">
+           <button class="btn btn-primary" ng-click="statusCodes(batchID)">Enter</button>
        </label>
+       <span>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</span>
        <label>
            Enter Skills<input ng-model="skill" type="text">
-           <button ng-click="skillSearch(skill)">Enter</button>
+           <button class="btn btn-primary" ng-click="skillSearch(skill.toLowerCase())">Enter</button>
        </label>
    </div>
   </body>
