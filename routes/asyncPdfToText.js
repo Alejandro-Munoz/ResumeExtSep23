@@ -1,9 +1,5 @@
 /**
-<<<<<<< HEAD
  * Created by Alejandro on 9/4/15.
-=======
- * Created by lakshmi on 9/4/15.
->>>>>>> lakshmi
  */
 
 var express = require('express');
@@ -32,12 +28,9 @@ var wordMatchArr = [];
 
 function getPdfToText(file, uniqueId, callback) {
     var fileName = file.slice(0,-4);
-    console.log('FileName=====>',arrId[fileName] )
-
     var pdftotext = spawn('pdftotext', [pathToPdf + fileName +'.pdf', saveTo + arrId[fileName] + '.txt'],  {cwd: 'C:/Program Files/Xpdf/bin64'});
 
     pdftotext.on('close', function (code) {
-        //if(code!=0) callback(code)
         Resume.findByIdAndUpdate(uniqueId, {status:'1'}, function (err, response) {
             if (err) {
                 console.log("Something broke", + " " + err);
@@ -52,7 +45,6 @@ function getPdfToText(file, uniqueId, callback) {
 
 function updateStatus(id,obj){
     Resume.findByIdAndUpdate(id, obj, function (err, response) {
-
         if (err) {
             console.log("Something broke while updating status", + " " + err);
         } else {
@@ -60,38 +52,25 @@ function updateStatus(id,obj){
             console.log("Successfully updated status");
         }
     });
-
 }
 
 function extractDataAndSave(path, id) {
-    //log into mongo start of process
     updateStatus(id,{status:'2'});
 
     fs.readFile(path, "utf-8", function(err, data) {
         if (err) console.log(err);
-        console.log('name from extract:', path);
         var phoneNumber;
         var email;
         phoneNumber = phoneMatch.exec(data.toString());
-        console.log('nullCheck: ' + (phoneNumber == null));
-
         data.toString().replace(wordMatch, function(_, matched){
             matched = matched.toLowerCase();
             wordCount[matched] = (wordCount[matched] || 1) +1;
         })
-
-        console.log("wordCount",wordCount);
-
-        //wordMatchArr.push(wordCount);
-
         if (phoneNumber !== null){
             phoneNumber = phoneNumber[0];
         }
         else phoneNumber = 'NA';
-        //console.log('phone number is', phoneNumber);
         email = emailMatch.exec(data.toString())[0];
-        //log into mongo end of process
-        //updateStatus(id,{status:'3', processDate: Date.now(), email: email, phone: phoneNumber });
         updateStatus(id,{status:'3', processDate: Date.now(), email: email, phone: phoneNumber, skills: wordCount });
     });
 }
@@ -111,7 +90,6 @@ function moveFiles(source, destination) {
     fs.readdir(pathToPdf, function (err, files) {
         if (err){
             console.log('Error while reading files');
-
         }
         else{
             var count = 0;
@@ -121,61 +99,18 @@ function moveFiles(source, destination) {
                         console.log("Error while moving files")
                     }
                 })
-
             });
         }
     })
     return true;
 }
 
-router.get('/status/:id', function(req, res){
-    console.log(req.params.id);
-    Resume.find({uuid:req.params.id},function(err, results){
-        if (err) res.status(500).json(err);
-        else {
-            //   console.log("====>",results);
-            res.status(200).json(results);
-            //  res.render('status',{Resume: JSON.stringify(results)});
-        }
-    });
-
-});
-
-router.get('/skills/:skill', function(req, res){
-    console.log("req.params.skill",req.params.skill);
-    var query = {};
-    query['skills.' + req.params.skill] = {$gte: 1};
-    console.log("query", query)
-    // var skillSet = ('skills.' + req.params.skill);
-    // console.log('skillSet',skillSet) //skills.react
-    Resume.find(query, function(err, results){
-        console.log('entry');
-
-        console.log(results);
-        if (err) {
-            res.status(500).json(err);
-        }
-        else {
-            //   console.log("====>",results);
-            res.status(200).json(results);
-            //  res.render('status',{Resume: JSON.stringify(results)});
-        }
-    });
-
-});
-
-
 router.get('/', function(req, res, next){
-
-    //moveFiles(pathToPdf, intermediate);
-
     fs.readdir(pathToPdf, function(err, files) {
         if (err) return;
-
         var count = 0;
         files.forEach(function(file){
             if( count % 5 === 0){
-
                 batch = uuid.v4();
             }
             count++;
@@ -188,15 +123,11 @@ router.get('/', function(req, res, next){
             arrId[filename] = uniqueId ;
             console.log("ID",uniqueId);
             asyncTasks.push(function(callback){
-                // Call an async function, often a save() to DB
+                // Call an async function
                 getPdfToText(file,uniqueId,function(){
-                    //console.log('converted to text',name);
                     //log in mongo status
                     callback();
                 });
-                //console.log('txtfile',txtFile);
-                //callback(txtFile);
-
             });
         });
 

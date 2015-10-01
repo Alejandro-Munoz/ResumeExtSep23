@@ -28,7 +28,7 @@ angular.module('myApp', []). controller('myCtrl', function($scope, $http){
     $scope.statusCodes = function(batchID){
         console.log('*************batch from status code',batchID);
 
-        $http.get('/status/'+$scope.batchID).success(function(result){
+        $http.get('/resumes/status/'+$scope.batchID).success(function(result){
             $scope.datalists = result;
             // console.log("status datalists",$scope.datalists);
             console.log("===>",$scope.datalists);
@@ -40,9 +40,9 @@ angular.module('myApp', []). controller('myCtrl', function($scope, $http){
     };
 
     $scope.skillSearch = function(skill){
-        console.log(skill);
-        // console.log($scope.skill)
-        $http.get('/skills/'+$scope.skill).success(function(result){
+        console.log('skill from skill search',skill);
+        //console.log(skill)
+        $http.get('/resumes/skills/'+$scope.skill).success(function(result){
             console.log('in')
             console.log('results*******',result);
             $scope.datalists = result;

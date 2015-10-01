@@ -31,4 +31,5 @@ mongoose.connect('mongodb://localhost/test', function (err) {
 //module.exports = Resume;
 module.exports = function (app) {
     app.use('/resumes', restgenerator(Resume));
+    app.use('/status', restgenerator(Resume));
 };

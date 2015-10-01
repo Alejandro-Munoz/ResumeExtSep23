@@ -9,7 +9,6 @@ var moment = require('moment');
 var router = require('express').Router();
 
 module.exports = function (MongooseModel) {
-
     // this callback is executed for all get requests to /resumes
     router.get('/', function (req, res) {
         // find call to mongoose
@@ -83,6 +82,31 @@ module.exports = function (MongooseModel) {
             }
         });
     });
+    //endpoint to get resumes batch status
+    router.get('/status/:id', function(req, res){
+        console.log('status router*********');
+        MongooseModel.find({uuid:req.params.id},function(err, results){
+            if (err) res.status(500).json(err);
+            else {
+                res.status(200).json(results);
+            }
+        });
+    });
+    //endpoint to get resumes skills
+    router.get('/skills/:skill', function(req, res){
+        var query = {};
+        query['skills.' + req.params.skill] = {$gte: 1};
+        MongooseModel.find(query, function(err, results){
+            console.log(results);
+            if (err) {
+                res.status(500).json(err);
+            }
+            else {
+                res.status(200).json(results);
+            }
+        });
+
+    });
 
     router.post('/', function (req, res) {
         (new MongooseModel(req.body)).save(function (err, response) {
@@ -95,6 +119,7 @@ module.exports = function (MongooseModel) {
             }
         });
     });
+
 
     router.put('/:id', function (req, res) {
         MongooseModel.findByIdAndUpdate(req.params.id, req.body, function (err, response) {
